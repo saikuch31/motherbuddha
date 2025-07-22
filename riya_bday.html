@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Birthday</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      overflow-x: hidden;
+      background: white;
+      color: black;
+      cursor: url('https://cdn-icons-png.flaticon.com/512/833/833472.png'), auto;
+    }
+
+    .floating-image {
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      animation: float 20s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg) scale(1); }
+      50% { transform: translateY(-40vh) rotate(10deg) scale(1.05); }
+      100% { transform: translateY(0) rotate(0deg) scale(1); }
+    }
+
+    .img1 { top: 10%; left: 5%; animation-delay: 0s; }
+    .img2 { top: 30%; left: 80%; animation-delay: 3s; animation-duration: 25s; }
+    .img3 { top: 50%; left: 10%; animation-delay: 6s; }
+    .img4 { top: 70%; left: 70%; animation-delay: 1s; animation-duration: 28s; }
+    .img5 { top: 40%; left: 40%; animation-delay: 2s; animation-duration: 30s; }
+    .img6 { top: 15%; left: 60%; animation-delay: 4s; }
+
+    .hover-section {
+      position: relative;
+      min-height: 100vh;
+      background: white;
+      padding: 4rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      user-select: none;
+    }
+
+    .hover-instructions {
+      width: 100%;
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-weight: 600;
+      color: #b91c1c; /* red-700 */
+    }
+
+    .hover-box {
+      width: 15rem;
+      height: 15rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      border-radius: 1rem;
+      background: white;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      color: #b91c1c;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease, transform 1s ease;
+      cursor: grab;
+      position: absolute; /* We'll set position dynamically */
+    }
+
+    .hover-box span {
+      padding: 1rem;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    .hover-box.dragging {
+      cursor: grabbing;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+      transition: none;
+    }
+
+    .center-content {
+      position: relative;
+      z-index: 20;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: opacity 0.5s, transform 1s;
+    }
+    .center-content.animated {
+      opacity: 1;
+      transform: translateY(-40px);
+      transition: opacity 0.5s, transform 1s;
+    }
+
+    .typewriter {
+      white-space: pre-wrap;
+      overflow: hidden;
+    }
+
+    #love-notes {
+      background: white;
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 4rem 1rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .page-flip {
+      width: 350px;
+      height: 200px;
+      perspective: 1500px;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .page {
+      width: 100%;
+      height: 100%;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      position: absolute;
+      top: 0; left: 0;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      font-size: 1.1rem;
+      color: #b91c1c;
+      font-weight: 500;
+      user-select: none;
+    }
+    .page.back { transform: rotateY(180deg); }
+    .page-flip.flipped .page.front { transform: rotateY(-180deg); transition: transform 0.7s ease-in-out; }
+    .page-flip.flipped .page.back { transform: rotateY(0deg); transition: transform 0.7s ease-in-out; }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    .nav-buttons button {
+      padding: 0.5rem 1rem;
+      font-weight: 600;
+      border: 1px solid black;
+      border-radius: 9999px;
+      background: transparent;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .nav-buttons button:hover {
+      background-color: black;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <script>window.onbeforeunload = () => window.scrollTo(0, 0);</script>
+
+  <!-- Floating Images -->
+  <img src="riya_pic_1.png" class="floating-image img1" />
+  <img src="riya_pic_2.png" class="floating-image img2" />
+  <img src="riya_pic_3.png" class="floating-image img3" />
+  <img src="riya_pic_4.png" class="floating-image img4" />
+  <img src="riya_pic_5.png" class="floating-image img5" />
+  <img src="riya_pic_6.png" class="floating-image img6" />
+
+  <!-- Centered Main Message -->
+  <div class="center-content" id="centerContent">
+    <h1 id="typeTitle" class="text-4xl font-semibold mb-4 typewriter"></h1>
+    <p id="typeSubtitle" class="max-w-md text-gray-700 mb-6 typewriter"></p>
+    <button onclick="launchConfetti()" class="border border-black text-black px-6 py-2 rounded-full hover:bg-black hover:text-white transition mt-6">🎁</button>
+  </div>
+
+  <!-- Interactive Hover Box Section -->
+  <section class="hover-section" id="hoverSection">
+    <div class="hover-instructions">I hope you've got your glasses on...</div>
+    <div class="hover-box" style="top: 15%; left: 10%;" tabindex="0"><span>I hope you know how many nights I spend just thinking about our inside jokes, and how I am so lucky to have someone so hilarious in my life</span></div>
+    <div class="hover-box" style="top: 65%; left: 15%;" tabindex="0"><span>Man, I cannot wait to see you again, and make senior year the best time of our lives</span></div>
+    <div class="hover-box" style="top: 25%; left: 70%;" tabindex="0"><span>I am beyond glad you took a chance on me, and I'm even more grateful that you continue to, even when you don't want to, and it gets rough. I really appreciate you so much</span></div>
+    <div class="hover-box" style="top: 55%; left: 60%;" tabindex="0"><span>I cannot wait to start a life with you, Riya. I just want to skip forward to us, our stupid kids, our stupid pets, and pure happiness</span></div>
+    <div class="hover-box" style="top: 35%; left: 80%;" tabindex="0"><span>Do you remember how bad I was shaking in October, because I couldn't even believe how good God was to put you in my life, even when I kept failing you</span></div>
+    <div class="hover-box" style="top: 75%; left: 40%;" tabindex="0"><span>hopefully you like this website haha --the boy</span></div>
+    <div class="hover-box" style="top: 45%; left: 30%;" tabindex="0"><span>I wish I can get to spend a million life times with you, and even then it won't be enough. We'll always have something to talk about, and I love that about us</span></div>
+  </section>
+
+  <!-- Love Notes Section -->
+  <section id="love-notes">
+    <div class="page-flip" id="pageFlip">
+      <div class="page front"></div>
+      <div class="page back"></div>
+    </div>
+    <div class="nav-buttons">
+      <button id="prevBtn">&lt; </button>
+      <button id="nextBtn"> &gt;</button>
+    </div>
+  </section>
+
+  <script>
+    const titleText = "happy birthday, \nmiss riya";
+    const subtitleText = "i can't wait to properly celebrate with you, and make more memories that will last a lifetime. \nthank you for being you, and for being mine.";
+    const titleEl = document.getElementById("typeTitle");
+    const subtitleEl = document.getElementById("typeSubtitle");
+    const centerContent = document.getElementById("centerContent");
+
+    function typeText(element, text, delay = 10, callback = () => {}) {
+      let i = 0;
+      const typing = () => {
+        if (i < text.length) {
+          element.textContent += text.charAt(i);
+          i++;
+          setTimeout(typing, delay);
+        } else {
+          callback();
+        }
+      };
+      typing();
+    }
+
+    window.onload = () => {
+      setTimeout(() => {
+        centerContent.classList.add('animated');
+        setTimeout(() => {
+          typeText(titleEl, titleText, 70, () => {
+            setTimeout(() => typeText(subtitleEl, subtitleText, 30), 500);
+            // Fade in hover boxes
+            document.querySelectorAll('.hover-box').forEach((box, index) => {
+              setTimeout(() => {
+                box.style.opacity = '1';
+                box.style.transform = 'translateY(0)';
+              }, 1000 + index * 300);
+            });
+          });
+        }, 1000);
+      }, 500);
+    };
+
+    // Confetti launch function (slow fall)
+      function launchConfetti() {
+        confetti({
+          particleCount: 180,
+          spread: 100,
+          origin: { y: 0.6 },
+          colors: ['#000000', '#666666']
+        });
+      }
+
+    // Love notes flipbook
+    const notes = [
+      "Dear Riya,",
+      "You light up my life in ways I never thought possible.",
+      "Thank you so much for being the person that I turn to, for anything and everything.",
+      "I'm so glad that person introduced us,",
+      "And I'm secretly very happy that that person isn't in our lives anymore.",
+      "I could have never imagined that I would find someone as special as you.",
+      "And you've been with me through my ups and downs, always supporting me,",
+      "Even when I didn't deserve it.",
+      "To say that you are my everything would be an understatement.",
+      "You are my best friend, my partner, and the love of my life.",
+      "Happy birthday, Riya. I love you so much."
+    ];
+
+    const pageFlip = document.getElementById('pageFlip');
+    const frontPage = pageFlip.querySelector('.front');
+    const backPage = pageFlip.querySelector('.back');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let currentIndex = 0;
+    let flipped = false;
+
+    function setPages() {
+      frontPage.textContent = notes[currentIndex];
+      backPage.textContent = notes[(currentIndex + 1) % notes.length];
+    }
+    setPages();
+
+    function flipPage(forward = true) {
+      if (!flipped) {
+        pageFlip.classList.add('flipped');
+        flipped = true;
+        setTimeout(() => {
+          pageFlip.classList.remove('flipped');
+          currentIndex = forward ? (currentIndex + 1) % notes.length : (currentIndex - 1 + notes.length) % notes.length;
+          setPages();
+          flipped = false;
+        }, 700);
+      }
+    }
+
+    nextBtn.addEventListener('click', () => flipPage(true));
+    prevBtn.addEventListener('click', () => flipPage(false));
+
+    // Drag & drop for hover boxes
+    const hoverBoxes = document.querySelectorAll('.hover-box');
+    hoverBoxes.forEach(box => {
+      let isDragging = false;
+      let startX, startY, origX, origY;
+
+      box.addEventListener('mousedown', e => {
+        isDragging = true;
+        box.classList.add('dragging');
+        startX = e.clientX;
+        startY = e.clientY;
+        origX = box.offsetLeft;
+        origY = box.offsetTop;
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        box.style.left = (origX + dx) + 'px';
+        box.style.top = (origY + dy) + 'px';
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          box.classList.remove('dragging');
+        }
+      });
+
+      // Touch events for mobile
+      box.addEventListener('touchstart', e => {
+        isDragging = true;
+        box.classList.add('dragging');
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+        origX = box.offsetLeft;
+        origY = box.offsetTop;
+        e.preventDefault();
+      }, { passive: false });
+
+      window.addEventListener('touchmove', e => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        box.style.left = (origX + dx) + 'px';
+        box.style.top = (origY + dy) + 'px';
+      }, { passive: false });
+
+      window.addEventListener('touchend', () => {
+        if (isDragging) {
+          isDragging = false;
+          box.classList.remove('dragging');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
