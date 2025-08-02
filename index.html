@@ -3,102 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Happy Birthday</title>
+  <title>National You Day</title>
 
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
     body {
       font-family: ui-sans-serif, system-ui, sans-serif;
       overflow-x: hidden;
-      background: white;
+      background: linear-gradient(to bottom right, #4387d9, hsl(205, 100%, 50%), #1f52de);
       color: black;
-      cursor: url('https://cdn-icons-png.flaticon.com/512/833/833472.png'), auto;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.8s ease, background-image 0.8s ease;
     }
 
-    .floating-image {
+    body.dark {
+      background-color: #111;
+      background-image: none;
+    }
+
+    #starCanvas {
       position: absolute;
-      width: 160px;
-      height: 160px;
-      object-fit: cover;
-      border-radius: 12px;
-      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-      animation: float 20s linear infinite;
-      z-index: 0;
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0) rotate(0deg) scale(1); }
-      50% { transform: translateY(-40vh) rotate(10deg) scale(1.05); }
-      100% { transform: translateY(0) rotate(0deg) scale(1); }
-    }
-
-    .img1 { top: 10%; left: 5%; animation-delay: 0s; }
-    .img2 { top: 30%; left: 80%; animation-delay: 3s; animation-duration: 25s; }
-    .img3 { top: 50%; left: 10%; animation-delay: 6s; }
-    .img4 { top: 70%; left: 70%; animation-delay: 1s; animation-duration: 28s; }
-    .img5 { top: 40%; left: 40%; animation-delay: 2s; animation-duration: 30s; }
-    .img6 { top: 15%; left: 60%; animation-delay: 4s; }
-
-    .hover-section {
-      position: relative;
-      min-height: 100vh;
-      background: white;
-      padding: 4rem 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 2rem;
-      user-select: none;
-    }
-
-    .hover-instructions {
+      inset: 0;
       width: 100%;
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-      text-align: center;
-      font-weight: 600;
-      color: #b91c1c; /* red-700 */
+      height: 100%;
+      z-index: 5;
+      display: none;
+      pointer-events: none;
     }
 
-    .hover-box {
-      width: 15rem;
-      height: 15rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      border-radius: 1rem;
-      background: white;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-      color: #b91c1c;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 1s ease, transform 1s ease;
-      cursor: grab;
-      position: absolute; /* We'll set position dynamically */
-    }
-
-    .hover-box span {
-      padding: 1rem;
-      font-weight: 500;
-      user-select: none;
-    }
-
-    .hover-box.dragging {
-      cursor: grabbing;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.2);
-      transition: none;
+    .gray-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 4;
     }
 
     .center-content {
       position: relative;
-      z-index: 20;
+      z-index: 10;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -106,125 +53,128 @@
       align-items: center;
       padding: 1rem;
       text-align: center;
-      opacity: 0;
-      transform: translateY(60px);
-      transition: opacity 0.5s, transform 1s;
-    }
-    .center-content.animated {
-      opacity: 1;
-      transform: translateY(-40px);
-      transition: opacity 0.5s, transform 1s;
     }
 
-    .typewriter {
-      white-space: pre-wrap;
-      overflow: hidden;
+    .typewriter::after {
+      content: '|';
+      animation: blink 1s infinite;
+      color: #b91c1c;
+      margin-left: 4px;
     }
 
-    #love-notes {
-      background: white;
-      min-height: 70vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 4rem 1rem;
-      position: relative;
+    @keyframes blink {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0; }
+    }
+
+    .icon-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      display: block;
+      margin: 1rem auto;
+      padding: 0.5rem;
       z-index: 10;
     }
 
-    .page-flip {
-      width: 350px;
-      height: 200px;
-      perspective: 1500px;
-      margin-bottom: 1rem;
-      position: relative;
+    .icon-button:hover {
+      transform: scale(1.15);
     }
-    .page {
-      width: 100%;
-      height: 100%;
-      background: white;
-      border-radius: 1rem;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-      position: absolute;
-      top: 0; left: 0;
-      backface-visibility: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-      font-size: 1.1rem;
-      color: #b91c1c;
-      font-weight: 500;
-      user-select: none;
-    }
-    .page.back { transform: rotateY(180deg); }
-    .page-flip.flipped .page.front { transform: rotateY(-180deg); transition: transform 0.7s ease-in-out; }
-    .page-flip.flipped .page.back { transform: rotateY(0deg); transition: transform 0.7s ease-in-out; }
 
-    .nav-buttons {
-      display: flex;
-      gap: 1rem;
+    .icon-svg {
+      width: 15px;
+      height: 15px;
+      color: #facc15;
     }
-    .nav-buttons button {
-      padding: 0.5rem 1rem;
-      font-weight: 600;
-      border: 1px solid black;
-      border-radius: 9999px;
-      background: transparent;
-      cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
+
+    /* Floating Love Notes */
+    #loveNotesContainer {
+      position: absolute;
+      inset: 0;
+      z-index: 11;
+      pointer-events: none;
     }
-    .nav-buttons button:hover {
-      background-color: black;
+
+    .love-note {
+      position: absolute;
       color: white;
+      font-size: 1rem;
+      font-weight: 500;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: auto;
+    }
+
+    .note-icon {
+      width: 32px;
+      height: 32px;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+
+    .love-note span {
+      display: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .love-note:hover .note-icon {
+      opacity: 0;
+    }
+
+    .love-note:hover span {
+      display: block;
+      opacity: 1;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
     }
   </style>
 </head>
 <body>
-  <script>window.onbeforeunload = () => window.scrollTo(0, 0);</script>
+  <canvas id="starCanvas"></canvas>
+  <div class="gray-overlay" id="overlay"></div>
 
-  <!-- Floating Images -->
-  <img src="riya_pic_1.png" class="floating-image img1" />
-  <img src="riya_pic_2.png" class="floating-image img2" />
-  <img src="riya_pic_3.png" class="floating-image img3" />
-  <img src="riya_pic_4.png" class="floating-image img4" />
-  <img src="riya_pic_5.png" class="floating-image img5" />
-  <img src="riya_pic_6.png" class="floating-image img6" />
-
-  <!-- Centered Main Message -->
   <div class="center-content" id="centerContent">
     <h1 id="typeTitle" class="text-4xl font-semibold mb-4 typewriter"></h1>
-    <p id="typeSubtitle" class="max-w-md text-gray-700 mb-6 typewriter"></p>
-    <button onclick="launchConfetti()" class="border border-black text-black px-6 py-2 rounded-full hover:bg-black hover:text-white transition mt-6">🎁</button>
+    <p id="typeSubtitle" class="max-w-md text-gray-200 mb-6 typewriter"></p>
+    <div class="flex flex-col items-center space-y-2 mt-4">
+      <!-- Reveal Stars Button -->
+      <button id="revealStarsBtn" class="icon-button" onclick="showStars()" title="Reveal the stars">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+             class="icon-svg">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75
+                   0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21
+                   12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+        </svg>
+      </button>
+
+      <!-- Back to Daylight Button -->
+      <button id="revertBtn" class="icon-button" onclick="hideStars()" title="Back to daylight">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+             class="icon-svg">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591
+                   1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5
+                   0 3.75 3.75 0 0 1 7.5 0Z" />
+        </svg>
+      </button>
+    </div>
   </div>
 
-  <!-- Interactive Hover Box Section -->
-  <section class="hover-section" id="hoverSection">
-    <div class="hover-instructions">I hope you've got your glasses on...</div>
-    <div class="hover-box" style="top: 15%; left: 10%;" tabindex="0"><span>I hope you know how many nights I spend just thinking about our inside jokes, and how I am so lucky to have someone so hilarious in my life</span></div>
-    <div class="hover-box" style="top: 65%; left: 15%;" tabindex="0"><span>Man, I cannot wait to see you again, and make senior year the best time of our lives</span></div>
-    <div class="hover-box" style="top: 25%; left: 70%;" tabindex="0"><span>I am beyond glad you took a chance on me, and I'm even more grateful that you continue to, even when you don't want to, and it gets rough. I really appreciate you so much</span></div>
-    <div class="hover-box" style="top: 55%; left: 60%;" tabindex="0"><span>I cannot wait to start a life with you, Riya. I just want to skip forward to us, our stupid kids, our stupid pets, and pure happiness</span></div>
-    <div class="hover-box" style="top: 35%; left: 80%;" tabindex="0"><span>Do you remember how bad I was shaking in October, because I couldn't even believe how good God was to put you in my life, even when I kept failing you</span></div>
-    <div class="hover-box" style="top: 75%; left: 40%;" tabindex="0"><span>hopefully you like this website haha --the boy</span></div>
-    <div class="hover-box" style="top: 45%; left: 30%;" tabindex="0"><span>I wish I can get to spend a million life times with you, and even then it won't be enough. We'll always have something to talk about, and I love that about us</span></div>
-  </section>
-
-  <!-- Love Notes Section -->
-  <section id="love-notes">
-    <div class="page-flip" id="pageFlip">
-      <div class="page front"></div>
-      <div class="page back"></div>
-    </div>
-    <div class="nav-buttons">
-      <button id="prevBtn">&lt; </button>
-      <button id="nextBtn"> &gt;</button>
-    </div>
-  </section>
+  <!-- Floating Love Notes Container -->
+  <div id="loveNotesContainer" class="hidden"></div>
 
   <script>
-    const titleText = "happy birthday, \nmiss riya";
-    const subtitleText = "i can't wait to properly celebrate with you, and make more memories that will last a lifetime. \nthank you for being you, and for being mine.";
+    const titleText = "happy national riya day,\nmadam";
+    const subtitleText = "i'm glad i get to spend this day with you, and i hope you know how much i love you";
     const titleEl = document.getElementById("typeTitle");
     const subtitleEl = document.getElementById("typeSubtitle");
     const centerContent = document.getElementById("centerContent");
@@ -237,6 +187,7 @@
           i++;
           setTimeout(typing, delay);
         } else {
+          element.classList.remove('typewriter');
           callback();
         }
       };
@@ -249,133 +200,286 @@
         setTimeout(() => {
           typeText(titleEl, titleText, 70, () => {
             setTimeout(() => typeText(subtitleEl, subtitleText, 30), 500);
-            // Fade in hover boxes
-            document.querySelectorAll('.hover-box').forEach((box, index) => {
-              setTimeout(() => {
-                box.style.opacity = '1';
-                box.style.transform = 'translateY(0)';
-              }, 1000 + index * 300);
-            });
           });
         }, 1000);
       }, 500);
     };
 
-    // Confetti launch function (slow fall)
-      function launchConfetti() {
-        confetti({
-          particleCount: 180,
-          spread: 100,
-          origin: { y: 0.6 },
-          colors: ['#000000', '#666666']
-        });
-      }
+    const canvas = document.getElementById('starCanvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
 
-    // Love notes flipbook
-    const notes = [
-      "Dear Riya,",
-      "You light up my life in ways I never thought possible.",
-      "Thank you so much for being the person that I turn to, for anything and everything.",
-      "I'm so glad that person introduced us,",
-      "And I'm secretly very happy that that person isn't in our lives anymore.",
-      "I could have never imagined that I would find someone as special as you.",
-      "And you've been with me through my ups and downs, always supporting me,",
-      "Even when I didn't deserve it.",
-      "To say that you are my everything would be an understatement.",
-      "You are my best friend, my partner, and the love of my life.",
-      "Happy birthday, Riya. I love you so much."
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
+    function startStarfield() {
+      resizeCanvas();
+      stars = Array.from({ length: 150 }).map(() => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.5,
+        alpha: Math.random(),
+        speed: Math.random() * 0.01 + 0.002
+      }));
+      drawStars();
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(s => {
+        s.alpha += s.speed;
+        if (s.alpha >= 1 || s.alpha <= 0) s.speed *= -1;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+        ctx.fill();
+      });
+      if (document.body.classList.contains('dark')) {
+        requestAnimationFrame(drawStars);
+      }
+    }
+
+    function showStars() {
+      document.body.classList.add('dark');
+      document.getElementById('overlay').style.display = 'block';
+      canvas.style.display = 'block';
+      startStarfield();
+
+      titleEl.style.color = 'white';
+      subtitleEl.style.color = 'white';
+      document.getElementById('revealStarsBtn').style.display = 'none';
+      document.getElementById('revertBtn').style.display = 'block';
+
+      createLoveNotes();
+    }
+
+    function hideStars() {
+      document.body.classList.remove('dark');
+      document.getElementById('overlay').style.display = 'none';
+      canvas.style.display = 'none';
+
+      titleEl.style.color = 'black';
+      subtitleEl.style.color = 'black';
+
+      const container = document.getElementById('loveNotesContainer');
+      container.classList.add('hidden');
+      container.innerHTML = '';
+      document.getElementById('revealStarsBtn').style.display = 'block';
+      document.getElementById('revertBtn').style.display = 'none';
+
+      // Add draggable icons with text for daylight mode
+      const daylightNotes = [
+        "i hope you enjoy this as much i have enjoyed making it",
+        "thank you for brightening my days",
+        "i want us to go back to that day when we walked to the fountain",
+        "life was perfect in that moment",
+        "that's what life with you feels like",
+        "happy national girlfriend day, riya!"
+      ];
+      container.classList.remove('hidden');
+      daylightNotes.forEach((note, i) => {
+        const noteDiv = document.createElement("div");
+        noteDiv.className = "love-note";
+        noteDiv.style.animation = `fadeIn 1s ease ${i * 0.3}s forwards`;
+
+        // Sun SVG icon
+        const icon = document.createElement("div");
+        icon.className = "note-icon";
+        icon.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+        </svg>
+                `;
+
+        const text = document.createElement("span");
+        text.textContent = note;
+
+        noteDiv.appendChild(icon);
+        noteDiv.appendChild(text);
+
+        // Random position
+        const x = Math.random() * (window.innerWidth - 200);
+        const y = Math.random() * (window.innerHeight - 100);
+        noteDiv.style.left = `${x}px`;
+        noteDiv.style.top = `${y}px`;
+
+        container.appendChild(noteDiv);
+        noteDiv.style.position = "absolute";
+
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+
+        function startDrag(clientX, clientY) {
+          isDragging = true;
+          dragOffsetX = clientX - noteDiv.offsetLeft;
+          dragOffsetY = clientY - noteDiv.offsetTop;
+          noteDiv.style.zIndex = 1000;
+        }
+
+        function drag(clientX, clientY) {
+          if (!isDragging) return;
+          noteDiv.style.left = `${clientX - dragOffsetX}px`;
+          noteDiv.style.top = `${clientY - dragOffsetY}px`;
+        }
+
+        function endDrag() {
+          if (isDragging) {
+            isDragging = false;
+            noteDiv.style.zIndex = "";
+          }
+        }
+
+        noteDiv.addEventListener("mousedown", (e) => {
+          startDrag(e.clientX, e.clientY);
+          e.preventDefault();
+        });
+
+        document.addEventListener("mousemove", (e) => {
+          drag(e.clientX, e.clientY);
+        });
+
+        document.addEventListener("mouseup", () => {
+          endDrag();
+        });
+
+        // Touch support
+        noteDiv.addEventListener("touchstart", (e) => {
+          if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            startDrag(touch.clientX, touch.clientY);
+            e.preventDefault();
+          }
+        });
+
+        document.addEventListener("touchmove", (e) => {
+          if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            drag(touch.clientX, touch.clientY);
+          }
+        });
+
+        document.addEventListener("touchend", () => {
+          endDrag();
+        });
+      });
+    }
+
+    const loveNotes = [
+      "i know that we've had a lot of ups and downs...",
+      "emphasis on downs...but i want to put emphasis on the ups too, even when i shouldn't haha",
+      "i know that i'm beyond lucky to have you in my life, and no matter what happens, i will always love you",
+      "you are my everything, and i want you to know that",
+      "i miss you more than you know, and i can't wait to see you again",
+      "i know you have your doubts about me again, but i want you to know that i will always be here for you",
+      "i will always be your biggest supporter, and i will always love you",
+      "everything between us is a learning experience, and i want to learn from it with you",
+      "i still dream about our future together, and i'm thinking of what we're naming our first child (i'm thinking riya jr. or riya 2.0)",
+      "one thing i do want you to know is how much i appreciate you, and even when you think that i don't, i want to kiss you and remind you that i do",
+      "i'm sorry for these past couple of weeks, and they were my fault. we've had a lot of thinking to do, and i'm glad i get to talk to you still, in the end.",
+      "i wish you could see yourself the way i see you",
+      "i want you to enjoy yourself tonight, and be happy with everything again, because there is no one that deserves it more than you do",
     ];
 
-    const pageFlip = document.getElementById('pageFlip');
-    const frontPage = pageFlip.querySelector('.front');
-    const backPage = pageFlip.querySelector('.back');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
+    function createLoveNotes() {
+      const container = document.getElementById("loveNotesContainer");
+      container.innerHTML = "";
+      container.classList.remove("hidden");
 
-    let currentIndex = 0;
-    let flipped = false;
+      loveNotes.forEach((note, i) => {
+        const noteDiv = document.createElement("div");
+        noteDiv.className = "love-note";
+        noteDiv.style.animation = `fadeIn 1s ease ${i * 0.3}s forwards`;
 
-    function setPages() {
-      frontPage.textContent = notes[currentIndex];
-      backPage.textContent = notes[(currentIndex + 1) % notes.length];
+        // Fingerprint SVG icon
+        const icon = document.createElement("div");
+        icon.className = "note-icon";
+        icon.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+               viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M7.864 4.243A7.5 7.5 0 0 1 19.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 0 0 4.5 10.5a7.464 7.464 0 0 1-1.15 3.993m1.989 3.559A11.209 11.209 0 0 0 8.25 10.5a3.75 3.75 0 1 1 7.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 0 1-3.6 9.75m6.633-4.596a18.666 18.666 0 0 1-2.485 5.33" />
+          </svg>`;
+
+        const text = document.createElement("span");
+        text.textContent = note;
+
+        noteDiv.appendChild(icon);
+        noteDiv.appendChild(text);
+
+        // Random position
+        const x = Math.random() * (window.innerWidth - 200);
+        const y = Math.random() * (window.innerHeight - 100);
+        noteDiv.style.left = `${x}px`;
+        noteDiv.style.top = `${y}px`;
+
+        container.appendChild(noteDiv);
+
+        noteDiv.style.position = "absolute";
+
+let isDragging = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+function startDrag(clientX, clientY) {
+  isDragging = true;
+  dragOffsetX = clientX - noteDiv.offsetLeft;
+  dragOffsetY = clientY - noteDiv.offsetTop;
+  noteDiv.style.zIndex = 1000;
+}
+
+function drag(clientX, clientY) {
+  if (!isDragging) return;
+  noteDiv.style.left = `${clientX - dragOffsetX}px`;
+  noteDiv.style.top = `${clientY - dragOffsetY}px`;
+}
+
+function endDrag() {
+  if (isDragging) {
+    isDragging = false;
+    noteDiv.style.zIndex = "";
+  }
+}
+
+noteDiv.addEventListener("mousedown", (e) => {
+  startDrag(e.clientX, e.clientY);
+  e.preventDefault();
+});
+
+document.addEventListener("mousemove", (e) => {
+  drag(e.clientX, e.clientY);
+});
+
+document.addEventListener("mouseup", () => {
+  endDrag();
+});
+
+// Touch support
+noteDiv.addEventListener("touchstart", (e) => {
+  if (e.touches.length === 1) {
+    const touch = e.touches[0];
+    startDrag(touch.clientX, touch.clientY);
+    e.preventDefault();
+  }
+});
+
+document.addEventListener("touchmove", (e) => {
+  if (e.touches.length === 1) {
+    const touch = e.touches[0];
+    drag(touch.clientX, touch.clientY);
+  }
+});
+
+document.addEventListener("touchend", () => {
+  endDrag();
+});
+
+      });
     }
-    setPages();
-
-    function flipPage(forward = true) {
-      if (!flipped) {
-        pageFlip.classList.add('flipped');
-        flipped = true;
-        setTimeout(() => {
-          pageFlip.classList.remove('flipped');
-          currentIndex = forward ? (currentIndex + 1) % notes.length : (currentIndex - 1 + notes.length) % notes.length;
-          setPages();
-          flipped = false;
-        }, 700);
-      }
-    }
-
-    nextBtn.addEventListener('click', () => flipPage(true));
-    prevBtn.addEventListener('click', () => flipPage(false));
-
-    // Drag & drop for hover boxes
-    const hoverBoxes = document.querySelectorAll('.hover-box');
-    hoverBoxes.forEach(box => {
-      let isDragging = false;
-      let startX, startY, origX, origY;
-
-      box.addEventListener('mousedown', e => {
-        isDragging = true;
-        box.classList.add('dragging');
-        startX = e.clientX;
-        startY = e.clientY;
-        origX = box.offsetLeft;
-        origY = box.offsetTop;
-        e.preventDefault();
-      });
-
-      window.addEventListener('mousemove', e => {
-        if (!isDragging) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        box.style.left = (origX + dx) + 'px';
-        box.style.top = (origY + dy) + 'px';
-      });
-
-      window.addEventListener('mouseup', () => {
-        if (isDragging) {
-          isDragging = false;
-          box.classList.remove('dragging');
-        }
-      });
-
-      // Touch events for mobile
-      box.addEventListener('touchstart', e => {
-        isDragging = true;
-        box.classList.add('dragging');
-        const touch = e.touches[0];
-        startX = touch.clientX;
-        startY = touch.clientY;
-        origX = box.offsetLeft;
-        origY = box.offsetTop;
-        e.preventDefault();
-      }, { passive: false });
-
-      window.addEventListener('touchmove', e => {
-        if (!isDragging) return;
-        const touch = e.touches[0];
-        const dx = touch.clientX - startX;
-        const dy = touch.clientY - startY;
-        box.style.left = (origX + dx) + 'px';
-        box.style.top = (origY + dy) + 'px';
-      }, { passive: false });
-
-      window.addEventListener('touchend', () => {
-        if (isDragging) {
-          isDragging = false;
-          box.classList.remove('dragging');
-        }
-      });
-    });
   </script>
 </body>
 </html>
